@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import GameController from './GameController';
+import GameController from './Game/GameController';
 
 function App()
 {

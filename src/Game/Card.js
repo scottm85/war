@@ -1,12 +1,11 @@
 class Card
 {
-    constructor(name, suit, value, unicode, color)
+    constructor(name, suit, value, unicode)
     {
         this.name = name;
         this.suit = suit;
         this.value = value;
         this.unicode = unicode;
-        this.color = color;
     }
 }
 
