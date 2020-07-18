@@ -1,31 +1,32 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
-import GameController from './Game/GameController';
+import openSocket from 'socket.io-client';
+const socket = openSocket('http://localhost:8000');
 
 function App()
 {
-  let gameController = new GameController();
-  gameController.init();
+    return (
+        <div className="App">
+            <header className="App-header">
 
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+            </header>
+        </div>
+    );
 }
+
+function getPlayerName()
+{
+    let name = prompt('Enter your name');
+    if (name.length > 0)
+    {
+        return name;
+    }
+    getPlayerName();
+}
+
+socket.on('connect', () => {
+    let playerName = getPlayerName();
+    socket.emit('newPlayer', playerName);
+});
 
 export default App;

@@ -3,4 +3,4 @@ const PlayerType = {
     SPECTATOR: 'Spectator'
 };
 
-export default PlayerType;
+module.exports = PlayerType;

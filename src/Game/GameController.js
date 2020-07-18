@@ -1,6 +1,6 @@
-import Deck from './Deck';
-import Player from './Player';
-import PlayerType from "./PlayerType";
+let Deck  = require('./Deck'),
+    Player = require('./Player'),
+    PlayerType = require("./PlayerType");
 
 class GameController
 {
@@ -15,16 +15,27 @@ class GameController
         this.deck.create();
         this.deck.shuffle();
 
-        this.addStaticPlayers(this.deck.split());
+        //this.addStaticPlayers(this.deck.split());
 
         console.log(this.players);
     }
 
     addStaticPlayers(hands)
     {
-        this.players.push(new Player('A','Player 1', hands[0], PlayerType.PLAYER));
-        this.players.push(new Player('B','Player 2', hands[1], PlayerType.PLAYER));
+        this.players.push(new Player('A','Player 1', PlayerType.PLAYER, hands[0]));
+        this.players.push(new Player('B','Player 2', PlayerType.PLAYER, hands[1]));
     }
+
+    newPlayer(socketId, name)
+    {
+        this.players.push(new Player(socketId, name, this.getPlayerType(), []));
+    }
+
+    getPlayerType()
+    {
+        return this.players.length < 2 ? PlayerType.PLAYER : PlayerType.SPECTATOR;
+    }
+
 }
 
-export default GameController;
+module.exports = GameController;

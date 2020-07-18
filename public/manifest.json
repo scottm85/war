@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "War",
+  "name": "The classic card game War on React with Socket.IO",
   "icons": [
     {
       "src": "favicon.ico",

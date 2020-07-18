@@ -22,4 +22,4 @@ const suits = {
     }
 };
 
-export default suits;
+module.exports = suits;

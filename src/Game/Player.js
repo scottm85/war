@@ -1,6 +1,6 @@
 class Player
 {
-    constructor(socketId, name, hand, type)
+    constructor(socketId, name, type, hand)
     {
         this.id = socketId;
         this.name = name || 'Guest';
@@ -20,4 +20,4 @@ class Player
     }
 }
 
-export default Player;
+module.exports = Player;

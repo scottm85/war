@@ -1,5 +1,5 @@
-import Card from './Card';
-import Suit from './Suit'
+let Card = require('./Card'),
+    Suit = require('./Suit');
 
 class Deck
 {
@@ -97,4 +97,4 @@ class Deck
     }
 }
 
-export default Deck;
+module.exports = Deck;
