@@ -1,17 +1,7 @@
-const io = require('socket.io')(),
-      port = 8000;
+const port = 8000,
+      io = require('socket.io')().listen(port);
 
 let GameController = require('./Game/GameController'),
-    gameController = new GameController();
+    gameController = new GameController(io.sockets);
 
-io.listen(port);
 console.log('Socket.IO is listening on port 8000');
-
-io.sockets.on('connection', (socket) => {
-    console.log('User connected!');
-
-    socket.on('newPlayer', (name) => {
-        gameController.newPlayer(socket.id, name);
-        console.log(gameController.players);
-    });
-});
