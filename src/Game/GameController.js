@@ -62,8 +62,7 @@ class GameController
         {
             switch(true)
             {
-                case p1Cards[p1Cards.length - 1].value === p2Cards[p2Cards.length - 1].value:
-                    // fetch 3 more cards for each player
+                case p1Cards[p1Cards.length - 1].value === p2Cards[p2Cards.length - 1].value: // both players cards matched, fetch 3 more and score again
                     setTimeout(() => {
                         for (let i = 0; i < 2; i++)
                         {
@@ -76,12 +75,12 @@ class GameController
                         this.isScoringReady();
                     }, this.turnDelay);
                     break;
-                case p1Cards[p1Cards.length - 1].value > p2Cards[p2Cards.length - 1].value:
+                case p1Cards[p1Cards.length - 1].value > p2Cards[p2Cards.length - 1].value: // player one scored
                     this.players[0].increaseScore(p1Cards.length + p2Cards.length);
                     this.socket.emit('playersUpdate', this.players);
                     this.clearField();
                     break;
-                case p1Cards[p1Cards.length - 1].value < p2Cards[p2Cards.length - 1].value:
+                case p1Cards[p1Cards.length - 1].value < p2Cards[p2Cards.length - 1].value: // player 2 scored
                     this.players[1].increaseScore(p1Cards.length + p2Cards.length);
                     this.socket.emit('playersUpdate', this.players);
                     this.clearField();
@@ -89,7 +88,19 @@ class GameController
                 default:
                     break;
             }
+            if (this.players[0].hand.length === 0 && this.players[1].hand.length === 0)
+            {
+                this.socket.emit('winner', this.getWinner().name);
+                setTimeout(() => {
+                    this.resetGame();
+                }, this.turnDelay);
+            }
         }
+    }
+
+    getWinner()
+    {
+        return this.players.reduce((highScore, player) => highScore.score > player.score ? highScore : player);
     }
 
     clearField()
@@ -142,10 +153,14 @@ class GameController
             player.hand = [];
             player.cardsInPlay = [];
             player.ready = false;
+            player.score = 0;
             this.players[i] = player;
         }
         this.deck = new Deck();
         this.gameState = GameState.IDLE;
+
+        this.socket.emit('playersUpdate', this.players);
+        this.socket.emit('gameState', this.gameState);
     }
 
     newPlayer(socketId, name)

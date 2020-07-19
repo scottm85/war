@@ -39,6 +39,10 @@ class GameArea extends React.Component
             this.setState({ gameState: gameState });
             console.log(this.gameState);
         });
+
+        this.socket.on('winner', (playerName) => {
+            alert(playerName + ' won the game!');
+        });
     }
 
     getPlayerName()
