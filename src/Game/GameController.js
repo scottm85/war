@@ -11,7 +11,6 @@ class GameController
         this.players = [];
         this.socket = io;
         this.gameState = GameState.IDLE;
-        this.turnState = GameState.IDLE;
         this.turnDelay = 2000;
 
         this.initSocket();

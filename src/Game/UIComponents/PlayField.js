@@ -1,6 +1,5 @@
 import React from "react";
 import Button from 'react-bootstrap/Button';
-import GameState from '../GameState';
 
 class PlayField extends React.Component
 {
@@ -35,7 +34,7 @@ class PlayField extends React.Component
                                 <div>{playerOne.id === this.props.socket.id && playerOne.cardsInPlay.length === 0 && <Button className='btn-sm' onClick={() => {this.fetchNextCard()}}>Flip Card</Button>}</div>
                             </div>
                         </div>
-                        <div className='col field'>
+                        <div className='col-6 field'>
                             <div className='display-flex mt-5'>
                                 <div className='card-in-play w-50 d-inline-block'>
                                     {playerOne.cardsInPlay && playerOne.cardsInPlay.map((card, key) => <div className='play-card' key={key} style={{color: card.suit.color}} dangerouslySetInnerHTML={{ __html: card.unicode}} />)}

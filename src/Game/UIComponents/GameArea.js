@@ -12,14 +12,13 @@ class GameArea extends React.Component
         super();
         this.state = {
             players: [],
-            gameState: GameState.IDLE,
-            turnState: GameState.IDLE
+            gameState: GameState.IDLE
         };
     }
 
     componentDidMount()
     {
-        this.socket = openSocket('http://localhost:8000');
+        this.socket = openSocket('http://10.0.0.140:8000');
         this.initSocket();
     }
 

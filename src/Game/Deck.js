@@ -25,7 +25,7 @@ class Deck
         this.cards.push(new Card('8', Suit.SPADE, 8, '&#127144;'));
         this.cards.push(new Card('9', Suit.SPADE, 9, '&#127145;'));
         this.cards.push(new Card('10', Suit.SPADE, 10, '&#127146;'));
-        this.cards.push(new Card('Jack', Suit.SPADE, 11, '&#127146;'));
+        this.cards.push(new Card('Jack', Suit.SPADE, 11, '&#127147;'));
         this.cards.push(new Card('Queen', Suit.SPADE, 12, '&#127149;'));
         this.cards.push(new Card('King', Suit.SPADE, 13, '&#127150;'));
 
