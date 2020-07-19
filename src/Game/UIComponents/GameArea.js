@@ -1,23 +1,21 @@
 import React from "react";
-import PlayerType from './PlayerType';
 import openSocket from 'socket.io-client';
+import PlayerList from "./PlayerList";
 
 class GameArea extends React.Component
 {
     constructor(props)
     {
         super();
-        this.socket = openSocket('http://localhost:8000');
         this.state = {
             players: []
         };
-
-        this.initSocket();
     }
 
     componentDidMount()
     {
-        this.setState({});
+        this.socket = openSocket('http://localhost:8000');
+        this.initSocket();
     }
 
     initSocket()
@@ -33,27 +31,18 @@ class GameArea extends React.Component
     getPlayerName()
     {
         let name = prompt('Enter your name');
-        if (name.length > 0)
+        if (name != null && name.length > 0)
         {
             return name;
         }
-        this.getPlayerName();
+        return this.getPlayerName();
     }
 
     render()
     {
         return (
             <div>
-                <div>
-                    <h3>Players</h3>
-                    <ul>
-                        { this.state.players.map((player, key) => player.type === PlayerType.PLAYER && <li>{player.name}</li>)  }
-                    </ul>
-                    <h3>Spectators</h3>
-                    <ul>
-                        { this.state.players.map((player, key) => player.type === PlayerType.SPECTATOR && <li>{player.name}</li>)  }
-                    </ul>
-                </div>
+                <PlayerList players={this.state.players} />
             </div>
         );
     }
