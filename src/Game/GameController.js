@@ -1,5 +1,6 @@
 let Deck  = require('./Deck'),
     Player = require('./Player'),
+    GameState = require('./GameState'),
     PlayerType = require("./PlayerType");
 
 class GameController
@@ -9,6 +10,7 @@ class GameController
         this.deck = new Deck();
         this.players = [];
         this.socket = io;
+        this.gameState = GameState.IDLE;
 
         this.initSocket();
     }
@@ -19,28 +21,57 @@ class GameController
             console.log('User connected!');
             socket.on('newPlayer', (name) => this.newPlayer(socket.id, name));
 
-            socket.on('disconnect', (socket) => {
+            socket.on('disconnect', (user) => {
                 console.log('User disconnected!');
-                this.removePlayer(socket.id);
+
+                let playerIndex = this.players.map((e) => { return e.id; }).indexOf(socket.id);
+                if (this.players[playerIndex].type === PlayerType.PLAYER)
+                {
+                    this.resetGame();
+                }
+                this.removePlayer(playerIndex);
             });
         });
     }
 
     initGame()
     {
+        this.gameState = GameState.SETUP;
+        console.log("----------------- Game Setup Started -----------------");
         this.deck.create();
         this.deck.shuffle();
+
+        // Lets split the deck and give each player a hand
+        let hands = this.deck.split();
+        this.players[0].hand = hands[0];
+        this.players[1].hand = hands[1];
+
+        this.socket.emit('playersUpdate', this.players);
+        this.socket.emit('gameState', this.gameState);
+    }
+    resetGame()
+    {
+        for (let i in this.players)
+        {
+            this.players[i].hand = [];
+        }
+        this.deck = new Deck();
+        this.gameState = GameState.IDLE;
     }
 
     newPlayer(socketId, name)
     {
         this.players.push(new Player(socketId, name, this.getPlayerType(), []));
         this.socket.emit('playersUpdate', this.players);
+
+        if (this.players.length > 1 && this.gameState === GameState.IDLE)
+        {
+            this.initGame();
+        }
     }
 
-    removePlayer(socketId)
+    removePlayer(playerIndex)
     {
-        let playerIndex = this.players.map((e) => { return e.id; }).indexOf(socketId);
         this.players.splice(playerIndex, 1);
         this.socket.emit('playersUpdate', this.players);
     }

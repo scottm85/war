@@ -1,6 +1,9 @@
 import React from "react";
 import openSocket from 'socket.io-client';
 import PlayerList from "./PlayerList";
+import PlayField from './PlayField';
+import GameState from '../GameState';
+import PlayerType from '../PlayerType';
 
 class GameArea extends React.Component
 {
@@ -8,7 +11,8 @@ class GameArea extends React.Component
     {
         super();
         this.state = {
-            players: []
+            players: [],
+            gameState: GameState.IDLE
         };
     }
 
@@ -25,7 +29,15 @@ class GameArea extends React.Component
             this.socket.emit('newPlayer', playerName);
         });
 
-        this.socket.on('playersUpdate', (players) => this.setState({'players': players}));
+        this.socket.on('playersUpdate', (players) => {
+            this.setState({ players: players});
+            console.log(this.state.players)
+        });
+
+        this.socket.on('gameState', (gameState) => {
+            this.setState({ gameState: gameState });
+            console.log(this.gameState);
+        });
     }
 
     getPlayerName()
@@ -41,8 +53,16 @@ class GameArea extends React.Component
     render()
     {
         return (
-            <div>
-                <PlayerList players={this.state.players} />
+            <div className='game-area'>
+                <PlayerList
+                    players={this.state.players}
+                />
+                {this.state.players.length > 1 &&
+                    <PlayField
+                        gameState={this.state.gameState}
+                        players={this.state.players.filter((e) => { return e.type === PlayerType.PLAYER; })}
+                    />
+                }
             </div>
         );
     }

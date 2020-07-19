@@ -12,14 +12,19 @@ class PlayerList extends React.Component
     {
         return (
             <div className='player-list'>
-                <h3>Players</h3>
-                <ul>
-                    { this.props.players.map((player, key) => player.type === PlayerType.PLAYER && <li key={key}>{player.name}</li>)  }
-                </ul>
-                <h3>Spectators</h3>
-                <ul>
+                <div>
+                    <h3>Players</h3>
+                    <ul>
+                        { this.props.players.map((player, key) => player.type === PlayerType.PLAYER && <li key={key}>{player.name}</li>)  }
+                    </ul>
+                </div>
+                {this.props.players.length > 2 &&
+                <div>
+                    <h3>Spectators</h3>
+                    <ul>
                     { this.props.players.map((player, key) => player.type === PlayerType.SPECTATOR && <li key={key}>{player.name}</li>)  }
-                </ul>
+                    </ul>
+                </div>}
             </div>
         );
     }
