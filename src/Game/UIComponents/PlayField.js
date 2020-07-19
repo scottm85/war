@@ -1,4 +1,6 @@
 import React from "react";
+import Button from 'react-bootstrap/Button';
+import GameState from '../GameState';
 
 class PlayField extends React.Component
 {
@@ -11,29 +13,44 @@ class PlayField extends React.Component
         };
     }
 
+    fetchNextCard()
+    {
+        this.props.socket.emit('fetchCard');
+    }
+
     render()
     {
+        let playerOne = this.props.players[0],
+            playerTwo = this.props.players[1];
+
         return (
             <div className='col play-field'>
                 <div className='container'>
                     <div className='row'>
                         <div className='col player-one'>
-                            <div>Player: {this.props.players[0].name}</div>
-                            <div>Score: {this.props.players[0].score}</div>
+                            <div>Player: {playerOne.name}</div>
+                            <div>Score: {playerOne.score}</div>
                             <div>
                                 <div className='play-card' style={{color: this.cardBack.color}} dangerouslySetInnerHTML={{ __html: this.cardBack.unicode}} />
-                                {/*{this.props.players[0].hand.map((card, key) => <div className='card' style={{color: card.suit.color}} key={key} dangerouslySetInnerHTML={{ __html: card.unicode}} />)}*/}
+                                <div>{playerOne.id === this.props.socket.id && playerOne.cardsInPlay.length === 0 && <Button className='btn-sm' onClick={() => {this.fetchNextCard()}}>Flip Card</Button>}</div>
                             </div>
                         </div>
                         <div className='col field'>
-                            <div/>
+                            <div className='display-flex mt-5'>
+                                <div className='card-in-play w-50 d-inline-block'>
+                                    {playerOne.cardsInPlay && playerOne.cardsInPlay.map((card, key) => <div className='play-card' key={key} style={{color: card.suit.color}} dangerouslySetInnerHTML={{ __html: card.unicode}} />)}
+                                </div>
+                                <div className='card-in-play w-50 d-inline-block text-right'>
+                                    {playerTwo.cardsInPlay && playerTwo.cardsInPlay.map((card, key) => <div className='play-card' key={key} style={{color: card.suit.color}} dangerouslySetInnerHTML={{ __html: card.unicode}} />)}
+                                </div>
+                            </div>
                         </div>
                         <div className='col player-two text-right'>
-                            <div>Player: {this.props.players[1].name}</div>
-                            <div>Score: {this.props.players[1].score}</div>
+                            <div>Player: {playerTwo.name}</div>
+                            <div>Score: {playerTwo.score}</div>
                             <div>
                                 <div className='play-card' style={{color: this.cardBack.color}} dangerouslySetInnerHTML={{ __html: this.cardBack.unicode}} />
-                                {/*{this.props.players[1].hand.map((card, key) => <div className='card' style={{color: card.suit.color}} key={key} dangerouslySetInnerHTML={{ __html: card.unicode}} />)}*/}
+                                <div>{playerTwo.id === this.props.socket.id && playerTwo.cardsInPlay.length === 0 && <Button className='btn-sm' onClick={() => {this.fetchNextCard()}}>Flip Card</Button>}</div>
                             </div>
                         </div>
                     </div>

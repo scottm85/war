@@ -11,6 +11,8 @@ class GameController
         this.players = [];
         this.socket = io;
         this.gameState = GameState.IDLE;
+        this.turnState = GameState.IDLE;
+        this.turnDelay = 2000;
 
         this.initSocket();
     }
@@ -22,7 +24,7 @@ class GameController
             socket.on('newPlayer', (name) => this.newPlayer(socket.id, name));
 
             socket.on('disconnect', () => {
-                let playerIndex = this.players.map((e) => { return e.id; }).indexOf(socket.id);
+                let playerIndex = this.getPlayerIndex(socket.id);
                 if (this.players[playerIndex] && this.players[playerIndex].type === PlayerType.PLAYER)
                 {
                     this.resetGame();
@@ -31,13 +33,74 @@ class GameController
             });
 
             socket.on('playerStatusUpdate', (status) => {
-                let playerIndex = this.players.map((e) => { return e.id; }).indexOf(socket.id);
+                let playerIndex = this.getPlayerIndex(socket.id);
                 this.players[playerIndex].ready = status;
                 this.socket.emit('playersUpdate', this.players);
                 this.isGameReady();
             });
 
+            socket.on('fetchCard', () => {
+                let playerIndex = this.getPlayerIndex(socket.id);
+                this.players[playerIndex].getNextCard();
+                this.socket.emit('playersUpdate', this.players);
+                this.isScoringReady();
+            });
+
         });
+    }
+
+    getPlayerIndex(socketId)
+    {
+        return this.players.map((e) => { return e.id; }).indexOf(socketId);
+    }
+
+    isScoringReady()
+    {
+        let p1Cards = this.players[0].cardsInPlay,
+            p2Cards = this.players[1].cardsInPlay;
+        if (p1Cards.length > 0 && p2Cards.length > 0)
+        {
+            switch(true)
+            {
+                case p1Cards[p1Cards.length - 1].value === p2Cards[p2Cards.length - 1].value:
+                    // fetch 3 more cards for each player
+                    setTimeout(() => {
+                        for (let i = 0; i < 2; i++)
+                        {
+                            for (let k = 0; k < 3; k++)
+                            {
+                                this.players[i].getNextCard();
+                            }
+                        }
+                        this.socket.emit('playersUpdate', this.players);
+                        this.isScoringReady();
+                    }, this.turnDelay);
+                    break;
+                case p1Cards[p1Cards.length - 1].value > p2Cards[p2Cards.length - 1].value:
+                    this.players[0].increaseScore(p1Cards.length + p2Cards.length);
+                    this.socket.emit('playersUpdate', this.players);
+                    this.clearField();
+                    break;
+                case p1Cards[p1Cards.length - 1].value < p2Cards[p2Cards.length - 1].value:
+                    this.players[1].increaseScore(p1Cards.length + p2Cards.length);
+                    this.socket.emit('playersUpdate', this.players);
+                    this.clearField();
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    clearField()
+    {
+        setTimeout(() => {
+            for(let i in this.players)
+            {
+                this.players[i].discardCardsInPlay();
+            }
+            this.socket.emit('playersUpdate', this.players);
+        }, this.turnDelay);
     }
 
     isGameReady()
@@ -64,6 +127,9 @@ class GameController
         this.players[0].hand = hands[0];
         this.players[1].hand = hands[1];
 
+        console.log("----------------- Active Game Has Started -----------------");
+        this.gameState = GameState.ACTIVE;
+
         this.socket.emit('playersUpdate', this.players);
         this.socket.emit('gameState', this.gameState);
     }
@@ -72,7 +138,11 @@ class GameController
     {
         for (let i in this.players)
         {
-            this.players[i].hand = [];
+            let player = this.players[i];
+            player.hand = [];
+            player.cardsInPlay = [];
+            player.ready = false;
+            this.players[i] = player;
         }
         this.deck = new Deck();
         this.gameState = GameState.IDLE;

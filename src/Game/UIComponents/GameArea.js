@@ -12,7 +12,8 @@ class GameArea extends React.Component
         super();
         this.state = {
             players: [],
-            gameState: GameState.IDLE
+            gameState: GameState.IDLE,
+            turnState: GameState.IDLE
         };
     }
 
@@ -57,11 +58,13 @@ class GameArea extends React.Component
                 <div className='row'>
                     <PlayerList
                         players={this.state.players}
+                        gameState={this.state.gameState}
                         socket={this.socket}
                     />
-                    {this.state.players.length > 1 && this.state.gameState === GameState.SETUP &&
+                    {this.state.players.length > 1 && this.state.gameState === GameState.ACTIVE &&
                     <PlayField
                         gameState={this.state.gameState}
+                        turnState={this.state.turnState}
                         players={this.state.players.filter((e) => { return e.type === PlayerType.PLAYER; })}
                         socket={this.socket}
                     />

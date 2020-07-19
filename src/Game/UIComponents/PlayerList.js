@@ -1,6 +1,7 @@
 import React from "react";
 import PlayerType from "../PlayerType";
 import Button from 'react-bootstrap/Button';
+import GameState from '../GameState';
 
 class PlayerList extends React.Component
 {
@@ -25,7 +26,9 @@ class PlayerList extends React.Component
                             this.props.players.map((player, key) => player.type === PlayerType.PLAYER &&
                                 <li className='py-2' key={key}>
                                     {player.name}
-                                    {!player.ready && player.id === this.props.socket.id
+                                    {this.props.gameState === GameState.ACTIVE
+                                        ? <span className='float-right'>In Game</span>
+                                        : !player.ready && player.id === this.props.socket.id
                                         ? <Button className='btn-sm float-right' onClick={() => {this.updatePlayerStatus()}}>Ready</Button>
                                         : !player.ready && player.id !== this.props.socket.id ? <span className='float-right'>Not Ready</span>
                                         : <span className='float-right'>Ready!</span>}
