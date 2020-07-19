@@ -53,16 +53,20 @@ class GameArea extends React.Component
     render()
     {
         return (
-            <div className='game-area'>
-                <PlayerList
-                    players={this.state.players}
-                />
-                {this.state.players.length > 1 &&
+            <div className='container game-area'>
+                <div className='row'>
+                    <PlayerList
+                        players={this.state.players}
+                        socket={this.socket}
+                    />
+                    {this.state.players.length > 1 && this.state.gameState === GameState.SETUP &&
                     <PlayField
                         gameState={this.state.gameState}
                         players={this.state.players.filter((e) => { return e.type === PlayerType.PLAYER; })}
+                        socket={this.socket}
                     />
-                }
+                    }
+                </div>
             </div>
         );
     }

@@ -18,20 +18,38 @@ class GameController
     initSocket()
     {
         this.socket.on('connection', (socket) => {
-            console.log('User connected!');
+
             socket.on('newPlayer', (name) => this.newPlayer(socket.id, name));
 
-            socket.on('disconnect', (user) => {
-                console.log('User disconnected!');
-
+            socket.on('disconnect', () => {
                 let playerIndex = this.players.map((e) => { return e.id; }).indexOf(socket.id);
-                if (this.players[playerIndex].type === PlayerType.PLAYER)
+                if (this.players[playerIndex] && this.players[playerIndex].type === PlayerType.PLAYER)
                 {
                     this.resetGame();
                 }
                 this.removePlayer(playerIndex);
             });
+
+            socket.on('playerStatusUpdate', (status) => {
+                let playerIndex = this.players.map((e) => { return e.id; }).indexOf(socket.id);
+                this.players[playerIndex].ready = status;
+                this.socket.emit('playersUpdate', this.players);
+                this.isGameReady();
+            });
+
         });
+    }
+
+    isGameReady()
+    {
+        if (this.players.length > 1 && this.gameState === GameState.IDLE)
+        {
+            let playerStatus = this.players.map((e) => { return e.ready; });
+            if (playerStatus[0] && playerStatus[1])
+            {
+                this.initGame();
+            }
+        }
     }
 
     initGame()
@@ -49,6 +67,7 @@ class GameController
         this.socket.emit('playersUpdate', this.players);
         this.socket.emit('gameState', this.gameState);
     }
+
     resetGame()
     {
         for (let i in this.players)
@@ -63,11 +82,6 @@ class GameController
     {
         this.players.push(new Player(socketId, name, this.getPlayerType(), []));
         this.socket.emit('playersUpdate', this.players);
-
-        if (this.players.length > 1 && this.gameState === GameState.IDLE)
-        {
-            this.initGame();
-        }
     }
 
     removePlayer(playerIndex)

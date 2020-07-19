@@ -6,6 +6,10 @@ class Deck
     constructor()
     {
         this.cards = [];
+        this.cardBack = {
+            unicode: '&#127136;',
+            color: '#3434bb'
+        };
     }
 
     create()

@@ -8,6 +8,7 @@ class Player
         this.discard = [];
         this.score = 0;
         this.type = type;
+        this.ready = false;
     }
 
     placeInDiscard(cards)

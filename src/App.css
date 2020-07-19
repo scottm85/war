@@ -1,17 +1,6 @@
-.game-area
-{
-    display: flex;
-    padding: 10px;
-}
-
 .player-list
 {
-    display: inline-block;
-    margin: 10px 15px;
-    padding: 10px;
-    border: solid 1px #000;
     background: #e5e5e5;
-    width: 200px;
 }
 
 .player-list h3
@@ -33,14 +22,10 @@
 
 .play-field
 {
-    display: inline-block;
-    margin: 10px 15px 10px 0;
-    padding: 10px;
-    width: 50%;
-    border: solid 1px #000;
+
 }
 
-.card
+.play-card
 {
     display: inline-block;
     font-size: 100px;
