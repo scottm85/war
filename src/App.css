@@ -22,11 +22,22 @@
 
 .play-field
 {
-
+    min-height: 300px;
 }
 
 .play-card
 {
-    display: inline-block;
+    display: block;
     font-size: 100px;
+    line-height: 81px;
+    height: 93px;
+    width: 64px;
+    background: #fff;
+    margin-top: -50px;
+    position: relative;
+}
+
+.play-card:first-child
+{
+    margin-top: 0;
 }

@@ -4,6 +4,7 @@ import PlayerList from "./PlayerList";
 import PlayField from './PlayField';
 import GameState from '../GameState';
 import PlayerType from '../PlayerType';
+import MessageLog from './MessageLog';
 
 class GameArea extends React.Component
 {
@@ -12,13 +13,14 @@ class GameArea extends React.Component
         super();
         this.state = {
             players: [],
-            gameState: GameState.IDLE
+            gameState: GameState.IDLE,
+            messages: []
         };
     }
 
     componentDidMount()
     {
-        this.socket = openSocket('http://10.0.0.140:8000');
+        this.socket = openSocket(':8000');
         this.initSocket();
     }
 
@@ -31,17 +33,26 @@ class GameArea extends React.Component
 
         this.socket.on('playersUpdate', (players) => {
             this.setState({ players: players});
-            console.log(this.state.players)
         });
 
         this.socket.on('gameState', (gameState) => {
             this.setState({ gameState: gameState });
-            console.log(this.gameState);
         });
 
         this.socket.on('winner', (playerName) => {
             alert(playerName + ' won the game!');
         });
+
+        this.socket.on('message', (message) => {
+            this.updateMessageLog(message);
+        });
+    }
+
+    updateMessageLog(message)
+    {
+        let messages = this.state.messages;
+        messages.unshift(message);
+        this.setState({ messages: messages });
     }
 
     getPlayerName()
@@ -72,6 +83,9 @@ class GameArea extends React.Component
                         socket={this.socket}
                     />
                     }
+                    <MessageLog
+                        messages={this.state.messages}
+                    />
                 </div>
             </div>
         );

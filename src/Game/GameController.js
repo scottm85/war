@@ -61,7 +61,8 @@ class GameController
         {
             switch(true)
             {
-                case p1Cards[p1Cards.length - 1].value === p2Cards[p2Cards.length - 1].value: // both players cards matched, fetch 3 more and score again
+                // both players cards matched, deal 3 more and try to score them again
+                case p1Cards[p1Cards.length - 1].value === p2Cards[p2Cards.length - 1].value:
                     setTimeout(() => {
                         for (let i = 0; i < 2; i++)
                         {
@@ -74,27 +75,50 @@ class GameController
                         this.isScoringReady();
                     }, this.turnDelay);
                     break;
-                case p1Cards[p1Cards.length - 1].value > p2Cards[p2Cards.length - 1].value: // player one scored
-                    this.players[0].increaseScore(p1Cards.length + p2Cards.length);
-                    this.socket.emit('playersUpdate', this.players);
-                    this.clearField();
+
+                // player one scored
+                case p1Cards[p1Cards.length - 1].value > p2Cards[p2Cards.length - 1].value:
+                    this.updatePlayerScore(this.players[0], p1Cards.length + p2Cards.length);
                     break;
-                case p1Cards[p1Cards.length - 1].value < p2Cards[p2Cards.length - 1].value: // player 2 scored
-                    this.players[1].increaseScore(p1Cards.length + p2Cards.length);
-                    this.socket.emit('playersUpdate', this.players);
-                    this.clearField();
+
+                // player 2 scored
+                case p1Cards[p1Cards.length - 1].value < p2Cards[p2Cards.length - 1].value:
+                    this.updatePlayerScore(this.players[1], p1Cards.length + p2Cards.length);
                     break;
+
                 default:
                     break;
             }
             if (this.players[0].hand.length === 0 && this.players[1].hand.length === 0)
             {
-                this.socket.emit('winner', this.getWinner().name);
+                if (this.isTie())
+                {
+                    this.socket.emit('message', this.players[0].name + ' and ' + this.players[1].name + ' tied!');
+                }
+                else
+                {
+                    let winner = this.getWinner();
+                    this.socket.emit('winner', winner.name);
+                    this.socket.emit('message', winner.name + ' won the game with a score of ' + this.getWinner().score + '!');
+                }
                 setTimeout(() => {
                     this.resetGame();
                 }, this.turnDelay);
             }
         }
+    }
+
+    isTie()
+    {
+        return this.players[0].score === this.players[1].score;
+    }
+
+    updatePlayerScore(player, points)
+    {
+        player.increaseScore(points);
+        this.socket.emit('message', player.name + ' scored ' + points + ' points.');
+        this.socket.emit('playersUpdate', this.players);
+        this.clearField();
     }
 
     getWinner()
@@ -142,6 +166,7 @@ class GameController
 
         this.socket.emit('playersUpdate', this.players);
         this.socket.emit('gameState', this.gameState);
+        this.socket.emit('message', 'A game has started between ' + this.players[0].name + ' and ' + this.players[1].name + '!');
     }
 
     resetGame()
