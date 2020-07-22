@@ -12,7 +12,7 @@ class MessageLog extends React.Component
     render()
     {
         return (
-            <div className='col-12'>
+            <div className='col-12 mt-3 card py-3'>
                 {this.props.messages.map((message, key) => <div className='message' key={key}>{message}</div>)}
             </div>
         );

@@ -18,7 +18,7 @@ class PlayerList extends React.Component
     render()
     {
         return (
-            <div className='col-12 col-lg-2 player-list'>
+            <div className='col-12 col-lg-2 player-list card pt-3'>
                 <div>
                     <h3>Players</h3>
                     <ul>

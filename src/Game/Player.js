@@ -14,18 +14,20 @@ class Player
 
     discardCardsInPlay()
     {
-        for(let i in this.cardsInPlay)
-        {
-            this.discard.push(this.cardsInPlay[i]);
-        }
+        // move cards in play to discard, and clear cards in play
+        this.discard.concat(this.cardsInPlay);
         this.cardsInPlay = [];
     }
 
     getNextCard()
     {
+        // remove the next card from this player's hand, and place it into play
         let card = this.hand[0];
-        this.hand.splice(0, 1);
-        return this.cardsInPlay.push(card);
+        if (card)
+        {
+            this.hand.splice(0, 1);
+            this.cardsInPlay.push(card);
+        }
     }
 
     increaseScore(cardsInPlay)

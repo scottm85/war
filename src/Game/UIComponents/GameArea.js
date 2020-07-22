@@ -68,7 +68,7 @@ class GameArea extends React.Component
     render()
     {
         return (
-            <div className='container game-area'>
+            <div className='container game-area mt-lg-3'>
                 <div className='row'>
                     <PlayerList
                         players={this.state.players}
