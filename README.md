@@ -1,6 +1,6 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## War the card game build on NodeJS, React, and Socket.IO
+## War the card game built on NodeJS, React, and Socket.IO
 
 **To Run**
 
