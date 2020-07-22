@@ -1,42 +1,26 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## War the card game build on NodeJS, React, and Socket.IO
 
-In the project directory, you can run:
+**To Run**
 
-### `node socket.js`
+Clone and install dependencies: `npm install`.<br/>
+Start the socket server: `node ./src/socket.js`<br>
+Start the React UI: `npm start`
 
-This starts socket.io so players can communicate with the server. Websocket will run on port 8000 unless changed.
+**To Play**
 
-### `npm start`
+React should automatically launch a tab to localhost in your default browser.<br/>
+If not, visit [http://localhost:3000](http://localhost:3000) (unless you specified a diffferent port  during startup)
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+You will be prompted to enter a player name upon opening the page. If you're playing by yourself open a second tab and enter a name for that player as well.<br />
+Once the game has two players, they will both need to click ready to start the game. Each player will have a "Flip" button they will need to click each turn.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+**More Info**
 
-### `npm test`
+The react components are state based and only update when the server sends updates via the websocket. The "ready" and "flip" buttons are the only<br/>
+client side event triggers. Most of the game logic is located in [`/src/game`](https://github.com/scottm85/war/tree/master/src/Game), where [`GameController.js`](https://github.com/scottm85/war/blob/master/src/Game/GameController.jshttps://github.com/scottm85/war/blob/master/src/Game/GameController.js) contains the controls  for the core game loop.
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+The other classes either act as object oriented classes([`Player.js`](https://github.com/scottm85/war/blob/master/src/Game/Player.js), [`Deck.js`](https://github.com/scottm85/war/blob/master/src/Game/Deck.js), [`Card.js`](https://github.com/scottm85/war/blob/master/src/Game/Card.js)), or similar to an enum to reduce repetitive string comparisons([`Suit.js`](https://github.com/scottm85/war/blob/master/src/Game/Suit.js), [`PlayerType.js`](https://github.com/scottm85/war/blob/master/src/Game/PlayerType.js), [`GameState.js`](https://github.com/scottm85/war/blob/master/src/Game/GameState.js)).
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+I wanted to do a bit more with the spectators. Potentially having the next spectator in line replace the loser as the next player, but unfortunately I was running short on time.
